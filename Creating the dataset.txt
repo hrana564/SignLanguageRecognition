@@ -1,0 +1,27 @@
+import tensorflow as tf
+from tensorflow import keras
+from keras.models import Sequential
+from keras.layers import Activation, Dense, Flatten, BatchNormalization, Conv2D, MaxPool2D, Dropout
+from keras.optimizers import Adam, SGD
+from keras.metrics import categorical_crossentropy
+from keras.preprocessing.image import ImageDataGenerator
+import warnings
+import numpy as np
+import cv2
+from keras.callbacks import ReduceLROnPlateau
+from keras.callbacks import ModelCheckpoint, EarlyStopping
+warnings.simplefilter(action='ignore', category=FutureWarning)
+background = None
+accumulated_weight = 0.5
+#Creating the dimensions for the ROI...
+ROI_top = 100
+ROI_bottom = 300
+ROI_right = 150
+ROI_left = 350
+def cal_accum_avg(frame, accumulated_weight):
+    global background
+    
+    if background is None:
+        background = frame.copy().astype("float")
+        return None
+    cv2.accumulateWeighted(frame, background, accumulated_weight)
